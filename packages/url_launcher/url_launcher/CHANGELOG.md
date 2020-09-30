@@ -1,3 +1,7 @@
+## 5.7.2
+
+* Improved documentation of the `headers` parameter.
+
 ## 5.7.1
 
 * Keep handling deprecated Android v1 classes for backward compatibility.
