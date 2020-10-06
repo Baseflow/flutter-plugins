@@ -1,3 +1,7 @@
+## 5.7.3
+
+* Added a new `LaunchStatus` to handle the ActivityNotFound exception that `activity.startActivity` can throw.
+
 ## 5.7.2
 
 * Add API documentation explaining the [canLaunch] method returns `false` if package visibility (Android API 30) is not managed correctly.
