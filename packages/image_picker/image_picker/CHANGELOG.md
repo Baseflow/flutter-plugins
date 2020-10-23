@@ -1,3 +1,6 @@
+## 0.8.1+2
+
+* Fix using Camera as image source on Android 11+
 
 ## 0.8.1+1
 
@@ -41,6 +44,7 @@ will no longer be able to access images or videos captured unless they are moved
 * Localize `UIAlertController` strings.
 
 ## 0.7.5+2
+
 * Implement `UIAlertController` with a preferredStyle of `UIAlertControllerStyleAlert` since `UIAlertView` is deprecated.
 
 ## 0.7.5+1
