@@ -537,8 +537,13 @@ public class ImagePickerDelegate
   private void handleChooseMultiImageResult(int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK && data != null) {
       ArrayList<String> paths = new ArrayList<>();
-      for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-        paths.add(fileUtils.getPathFromUri(activity, data.getClipData().getItemAt(i).getUri()));
+      
+      if (data.getClipData() != null) {
+        for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+          paths.add(fileUtils.getPathFromUri(activity, data.getClipData().getItemAt(i).getUri()));
+        }
+      } else {
+        paths.add(fileUtils.getPathFromUri(activity, data.getData()));
       }
       handleMultiImageResult(paths, false);
       return;
