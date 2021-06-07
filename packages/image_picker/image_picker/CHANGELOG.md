@@ -1,3 +1,11 @@
+## 0.9.0
+
+* BREAKING CHANGE: Removed redundant request for camera permissions.
+If your app declares the CAMERA permission in its Android manifest file, your app has to obtain 
+the CAMERA permission from the user before you can pick an image or video using the camera.
+If your manifest does not declare the permission, this does not apply and you can pick images 
+or videos from the camera as usual.
+
 ## 0.8.0+2
 
 * Readded request for camera permissions.

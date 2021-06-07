@@ -19,12 +19,13 @@ Add the following keys to your _Info.plist_ file, located in `<project root>/ios
 
 ### Android
 
-No configuration required - the plugin should work out of the box.
-
 It is no longer required to add `android:requestLegacyExternalStorage="true"` as an attribute to the `<application>` tag in AndroidManifest.xml, as `image_picker` has been updated to make use of scoped storage.
 
 **Note:** Images and videos picked using the camera are saved to your application's local cache, and should therefore be expected to only be around temporarily.
 If you require your picked image to be stored permanently, it is your responsibility to move it to a more permanent location.
+
+Your app does not require to declare the CAMERA permission in its manifest in order to use `ImageSource.camera`.
+**Note:** If your app *does* declare the CAMERA permission in its manifest for another reason, the user *must* have granted the CAMERA permission first in order to use `ImageSource.camera`.
 
 ### Example
 
