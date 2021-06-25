@@ -180,6 +180,10 @@ public class ImagePickerDelegateTest {
   public void
       takeImageWithCamera_WhenHasCameraPermission_AndNoActivityToHandleCameraIntent_FinishesWithNoCamerasAvailableError() {
     when(mockPermissionManager.isPermissionGranted(Manifest.permission.CAMERA)).thenReturn(true);
+    MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
+    mockStaticFile
+            .when(() -> File.createTempFile(any(), any(), any()))
+            .thenReturn(new File("/tmpfile"));
     doThrow(ActivityNotFoundException.class)
         .when(mockActivity)
         .startActivityForResult(any(Intent.class), anyInt());
@@ -189,6 +193,7 @@ public class ImagePickerDelegateTest {
     verify(mockResult)
         .error("no_available_camera", "No cameras available for taking pictures.", null);
     verifyNoMoreInteractions(mockResult);
+    mockStaticFile.close();
   }
 
   @Test
@@ -206,6 +211,7 @@ public class ImagePickerDelegateTest {
     mockStaticFile.verify(
         () -> File.createTempFile(any(), eq(".jpg"), eq(new File("/image_picker_cache"))),
         times(1));
+    mockStaticFile.close();
   }
 
   @Test
