@@ -156,8 +156,8 @@ public class ImagePickerDelegateTest {
     when(mockPermissionManager.needRequestCameraPermission()).thenReturn(false);
     MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
     mockStaticFile
-            .when(() -> File.createTempFile(any(), any(), any()))
-            .thenReturn(new File("/tmpfile"));
+        .when(() -> File.createTempFile(any(), any(), any()))
+        .thenReturn(new File("/tmpfile"));
     ImagePickerDelegate delegate = createDelegate();
     delegate.takeImageWithCamera(mockMethodCall, mockResult);
 
