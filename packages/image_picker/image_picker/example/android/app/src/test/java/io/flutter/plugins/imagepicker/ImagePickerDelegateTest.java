@@ -194,7 +194,6 @@ public class ImagePickerDelegateTest {
   @Test
   public void takeImageWithCamera_WritesImageToCacheDirectory() {
     when(mockPermissionManager.isPermissionGranted(Manifest.permission.CAMERA)).thenReturn(true);
-    when(mockIntentResolver.resolveActivity(any(Intent.class))).thenReturn(true);
 
     MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
     mockStaticFile
