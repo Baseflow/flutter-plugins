@@ -26,6 +26,8 @@ import android.net.Uri;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.File;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,6 +51,8 @@ public class ImagePickerDelegateTest {
   @Mock ImagePickerCache cache;
 
   ImagePickerDelegate.FileUriResolver mockFileUriResolver;
+
+  MockedStatic<File> mockStaticFile;
 
   private static class MockFileUriResolver implements ImagePickerDelegate.FileUriResolver {
     @Override
@@ -87,6 +91,16 @@ public class ImagePickerDelegateTest {
 
     Uri mockUri = mock(Uri.class);
     when(mockIntent.getData()).thenReturn(mockUri);
+
+    mockStaticFile = Mockito.mockStatic(File.class);
+    mockStaticFile
+            .when(() -> File.createTempFile(any(), any(), any()))
+            .thenReturn(new File("/tmpfile"));
+  }
+
+  @After
+  public void tearDown() {
+    mockStaticFile.close();
   }
 
   @Test
@@ -154,17 +168,13 @@ public class ImagePickerDelegateTest {
   @Test
   public void takeImageWithCamera_WhenCameraPermissionNotPresent_RequestsForPermission() {
     when(mockPermissionManager.needRequestCameraPermission()).thenReturn(false);
-    MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
-    mockStaticFile
-        .when(() -> File.createTempFile(any(), any(), any()))
-        .thenReturn(new File("/tmpfile"));
+
     ImagePickerDelegate delegate = createDelegate();
     delegate.takeImageWithCamera(mockMethodCall, mockResult);
 
     verify(mockActivity)
         .startActivityForResult(
             any(Intent.class), eq(ImagePickerDelegate.REQUEST_CODE_TAKE_IMAGE_WITH_CAMERA));
-    mockStaticFile.close();
   }
 
   @Test
@@ -184,10 +194,6 @@ public class ImagePickerDelegateTest {
   public void
       takeImageWithCamera_WhenHasCameraPermission_AndNoActivityToHandleCameraIntent_FinishesWithNoCamerasAvailableError() {
     when(mockPermissionManager.isPermissionGranted(Manifest.permission.CAMERA)).thenReturn(true);
-    MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
-    mockStaticFile
-        .when(() -> File.createTempFile(any(), any(), any()))
-        .thenReturn(new File("/tmpfile"));
     doThrow(ActivityNotFoundException.class)
         .when(mockActivity)
         .startActivityForResult(any(Intent.class), anyInt());
@@ -197,17 +203,11 @@ public class ImagePickerDelegateTest {
     verify(mockResult)
         .error("no_available_camera", "No cameras available for taking pictures.", null);
     verifyNoMoreInteractions(mockResult);
-    mockStaticFile.close();
   }
 
   @Test
   public void takeImageWithCamera_WritesImageToCacheDirectory() {
     when(mockPermissionManager.isPermissionGranted(Manifest.permission.CAMERA)).thenReturn(true);
-
-    MockedStatic<File> mockStaticFile = Mockito.mockStatic(File.class);
-    mockStaticFile
-        .when(() -> File.createTempFile(any(), any(), any()))
-        .thenReturn(new File("/tmpfile"));
 
     ImagePickerDelegate delegate = createDelegate();
     delegate.takeImageWithCamera(mockMethodCall, mockResult);
@@ -215,7 +215,6 @@ public class ImagePickerDelegateTest {
     mockStaticFile.verify(
         () -> File.createTempFile(any(), eq(".jpg"), eq(new File("/image_picker_cache"))),
         times(1));
-    mockStaticFile.close();
   }
 
   @Test
